@@ -31,6 +31,6 @@ fi
 (setq shell-command-switch "-ic")
 ```
 
-`-i`就是告诉bash是交互式的, 然后才会去读取.bashrc。或者你也可以配置**BASH_ENV**, 单独为非交互式的shell指定启动脚本.
+`-i`指定bash启动是交互式的, 然后才会去读取.bashrc。或者你也可以配置**BASH_ENV**, 单独为非交互式的shell指定启动脚本。`-c`表示命令读取来字符串。
 
 以上统统搞定终于写出了我的第一篇博客！哈哈
