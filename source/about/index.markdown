@@ -7,7 +7,7 @@ sharing: true
 footer: true
 ---
 
-一个业余的Common Lisp程序员和专业的C++程序员。
+一个业余Common Lisp和专业C++程序员。
 
 
 **How to contact me?**
