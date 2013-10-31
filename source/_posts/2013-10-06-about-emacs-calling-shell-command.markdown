@@ -3,21 +3,21 @@ layout: post
 title: "Emacs执行shell命令的问题"
 date: 2013-10-06 23:21
 comments: true
-categories: emacs
+categories: Emacs
 ---
 
 
 今天在配置emacs的[markdown-mode](http://jblevins.org/projects/markdown-mode/)时调用`C-c C-c p`(转换成html然后在浏览器里打开预览)一直提示**/bin/bash: markdown: command not found**，它需要一个shell命令能将markdown转换成html，这里我用到了一个python的[markdown](https://pypi.python.org/pypi/Markdown)库。
 
-安装完成在我的机器上是这个路径：
+安装完在我的机器上是这个路径：
 ``/Library/Frameworks/Python.framework/Versions/Current/bin/markdown_py``
 
 接下来在/usr/bin创建一个markdown的软链接到markdown_py
 ``` bash
-sudo ln -s /Library/Frameworks/Python.framework/Versions/Current/bin/markdown_py markdown /usr/bin/markdown
+sudo ln -s /Library/Frameworks/Python.framework/Versions/Current/bin/markdown_py /usr/bin/markdown
 ```
 
-做完上面这些之后在emacs里调用`C-c C-c p`还是提示同样的错误，但是markdown在我的本地终端可以执行。Google了下之后发现这可能是由于emacs在启动一个shell的时候不会去读取.bash_profile，这个文件只是在登陆的时候被读取一次。而我在.bashrc里没有做任何关于环境变量的设置，所以/usr/bin没有被加到PATH里去，导致bash找不到markdown这条命令。
+做完上面这些后在emacs里调用`C-c C-c p`还是提示同样的错误，但是markdown在我的本地终端可以执行。Google了下之后发现这可能是由于emacs在启动一个shell的时候不会去读取.bash_profile，这个文件只是在登陆的时候被读取一次。而我在.bashrc里没有做任何关于环境变量的设置，所以/usr/bin没有被加到PATH里去，导致bash找不到markdown这条命令。
 
 等我把下面这句加到.bashrc
 ``` bash
