@@ -52,5 +52,4 @@ int main()
 
 > C++ lets you get away with doing things that aren't allowed, under the name undefined behaviour. Basically, it means "if you do something stupid, we won't stop you, but absolutely anything could happen"! 
 
-[^1]: http://www.cppblog.com/ElliottZC/archive/2007/07/20/28416.html "C++多态性：虚函数的调用原理"
-
+[^1]: [C++多态性：虚函数的调用原理](http://www.cppblog.com/ElliottZC/archive/2007/07/20/28416.html)  
