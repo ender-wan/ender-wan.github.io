@@ -35,7 +35,7 @@ int main()
     foo_ptr = (foo*)val;
     foo_ptr->get_foo(100);
     foo_ptr->m_foo = 101;
-    cout << foo_ptr->get_m_foo() << endl;
+    cout << foo_ptr->m_foo << endl;
 
     return 0;
 }
