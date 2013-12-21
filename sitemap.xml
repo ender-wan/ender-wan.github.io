@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
+    <url>
+        <loc>http://endwan.com/blog/2013/10/06/about-emacs-calling-shell-command/</loc>
+        <lastmod>2013-12-21T18:07:47+08:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://endwan.com/blog/2013/10/31/c-plus-plus-arbitrarily-pointer-convert-to-an-object-pointer/
+        </loc>
+        <lastmod>2013-12-21T18:07:47+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://endwan.com/blog/2013/12/21/work-at-home-this-week/</loc>
+        <lastmod>2013-12-21T18:07:47+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://endwan.com/about/</loc>
+        <lastmod>2013-12-21T18:07:47+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://endwan.com/blog/archives/</loc>
+        <lastmod>2013-12-21T18:07:47+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://endwan.com/</loc>
+        <lastmod>2013-12-21T18:07:47+08:00</lastmod>
+    </url>
+    <url>
+        <loc>http://endwan.com/robots.txt</loc>
+        <lastmod>2013-12-21T18:07:47+08:00</lastmod>
+    </url>
+</urlset>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Emacs | Ender's Blog]]></title>
+  <link href="http://endwan.com/blog/categories/emacs/atom.xml" rel="self"/>
+  <link href="http://endwan.com/"/>
+  <updated>2013-12-21T18:11:57+08:00</updated>
+  <id>http://endwan.com/</id>
+  <author>
+    <name><![CDATA[Ender Wan]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Emacs执行shell命令的问题]]></title>
+    <link href="http://endwan.com/blog/2013/10/06/about-emacs-calling-shell-command/"/>
+    <updated>2013-10-06T23:21:00+08:00</updated>
+    <id>http://endwan.com/blog/2013/10/06/about-emacs-calling-shell-command</id>
+    <content type="html"><![CDATA[<p>今天在配置emacs的<a href="http://jblevins.org/projects/markdown-mode/">markdown-mode</a>时调用<code>C-c C-c p</code>(转换成html然后在浏览器里打开预览)一直提示<strong>/bin/bash: markdown: command not found</strong>，它需要一个shell命令能将markdown转换成html，这里我用到了一个python的<a href="https://pypi.python.org/pypi/Markdown">markdown</a>库。</p>
+
+<p>安装完在我的机器上是这个路径：
+<code>/Library/Frameworks/Python.framework/Versions/Current/bin/markdown_py</code></p>
+
+<p>接下来在/usr/bin创建一个markdown的软链接到markdown_py
+<code>bash
+sudo ln -s /Library/Frameworks/Python.framework/Versions/Current/bin/markdown_py /usr/bin/markdown
+</code></p>
+
+<p>做完上面这些后在emacs里调用<code>C-c C-c p</code>还是提示同样的错误，但是markdown在我的本地终端可以执行。Google了下之后发现这可能是由于emacs在启动一个shell的时候不会去读取.bash_profile，这个文件只是在登陆的时候被读取一次。而我在.bashrc里没有做任何关于环境变量的设置，所以/usr/bin没有被加到PATH里去，导致bash找不到markdown这条命令。</p>
+
+<p>等我把下面这句加到.bashrc
+<code>bash
+if [ -f ~/.bash_profile ]; then
+. ~/.bash_profile
+fi
+</code></p>
+
+<p>问题还是没有解决，提示同样的错误。继续Google, 最后终于在<a href="http://stackoverflow.com/questions/4393628/emacs-shell-command-not-found">这里</a>找到答案。emacs直接执行shell命令默认是非交互式的，所以不会去读取.bashrc文件的。解决的办法就是在.emacs初始化文件里加上这句。
+<code>cl
+(setq shell-command-switch "-ic")
+</code></p>
+
+<p><code>-i</code>指定bash启动是交互式的, 然后才会去读取.bashrc。或者你也可以配置<strong>BASH_ENV</strong>, 单独为非交互式的shell指定启动脚本。<code>-c</code>表示命令读取来自字符串。</p>
+
+<p>以上统统搞定终于写出了我的第一篇博客！哈哈</p>
+]]></content>
+  </entry>
+  
+</feed>

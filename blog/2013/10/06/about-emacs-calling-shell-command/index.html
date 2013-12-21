@@ -1,0 +1,281 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Emacs执行shell命令的问题 - Ender's Blog</title>
+  <meta name="author" content="Ender Wan">
+
+  
+  <meta name="description" content="今天在配置emacs的markdown-mode时调用C-c C-c p(转换成html然后在浏览器里打开预览)一直提示/bin/bash: markdown: command not found，它需要一个shell命令能将markdown转换成html， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://endwan.com/blog/2013/10/06/about-emacs-calling-shell-command/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Ender's Blog" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-44645169-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:endwan.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+    <li><a href="/">
+        <span class="blue_light">
+            Ender's Blog
+        </span>
+       
+    </a></li>
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Emacs执行shell命令的问题</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-10-06T23:21:00+08:00" pubdate data-updated="true">Oct 6<span>th</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>今天在配置emacs的<a href="http://jblevins.org/projects/markdown-mode/">markdown-mode</a>时调用<code>C-c C-c p</code>(转换成html然后在浏览器里打开预览)一直提示<strong>/bin/bash: markdown: command not found</strong>，它需要一个shell命令能将markdown转换成html，这里我用到了一个python的<a href="https://pypi.python.org/pypi/Markdown">markdown</a>库。</p>
+
+<p>安装完在我的机器上是这个路径：
+<code>/Library/Frameworks/Python.framework/Versions/Current/bin/markdown_py</code></p>
+
+<p>接下来在/usr/bin创建一个markdown的软链接到markdown_py</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo ln -s /Library/Frameworks/Python.framework/Versions/Current/bin/markdown_py /usr/bin/markdown
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>做完上面这些后在emacs里调用<code>C-c C-c p</code>还是提示同样的错误，但是markdown在我的本地终端可以执行。Google了下之后发现这可能是由于emacs在启动一个shell的时候不会去读取.bash_profile，这个文件只是在登陆的时候被读取一次。而我在.bashrc里没有做任何关于环境变量的设置，所以/usr/bin没有被加到PATH里去，导致bash找不到markdown这条命令。</p>
+
+<p>等我把下面这句加到.bashrc</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="k">if</span> <span class="o">[</span> -f ~/.bash_profile <span class="o">]</span>; <span class="k">then</span>
+</span><span class='line'>. ~/.bash_profile
+</span><span class='line'><span class="k">fi</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>问题还是没有解决，提示同样的错误。继续Google, 最后终于在<a href="http://stackoverflow.com/questions/4393628/emacs-shell-command-not-found">这里</a>找到答案。emacs直接执行shell命令默认是非交互式的，所以不会去读取.bashrc文件的。解决的办法就是在.emacs初始化文件里加上这句。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='cl'><span class='line'><span class="p">(</span><span class="k">setq</span> <span class="nv">shell-command-switch</span> <span class="s">&quot;-ic&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>-i</code>指定bash启动是交互式的, 然后才会去读取.bashrc。或者你也可以配置<strong>BASH_ENV</strong>, 单独为非交互式的shell指定启动脚本。<code>-c</code>表示命令读取来自字符串。</p>
+
+<p>以上统统搞定终于写出了我的第一篇博客！哈哈</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Ender Wan</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-10-06T23:21:00+08:00" pubdate data-updated="true">Oct 6<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/emacs/'>Emacs</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://endwan.com/blog/2013/10/06/about-emacs-calling-shell-command/" data-via="" data-counturl="http://endwan.com/blog/2013/10/06/about-emacs-calling-shell-command/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/10/31/c-plus-plus-arbitrarily-pointer-convert-to-an-object-pointer/" title="Next Post: C++任意指针转换为object指针">C++任意指针转换为object指针 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Categories</h1>
+    <ul id="category-list"><li><a href='/blog/categories//c-plus-plus/'>C++ (1)</a></li><li><a href='/blog/categories//emacs/'>Emacs (1)</a></li><li><a href='/blog/categories//life/'>Life (1)</a></li><li><a href='/blog/categories//zhi-zhen/'>指针 (1)</a></li></ul>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/12/21/work-at-home-this-week/">Work at Home This Week</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/10/31/c-plus-plus-arbitrarily-pointer-convert-to-an-object-pointer/">C++任意指针转换为object指针</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/10/06/about-emacs-calling-shell-command/">Emacs执行shell命令的问题</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Ender Wan -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'endersblog';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://endwan.com/blog/2013/10/06/about-emacs-calling-shell-command/';
+        var disqus_url = 'http://endwan.com/blog/2013/10/06/about-emacs-calling-shell-command/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
