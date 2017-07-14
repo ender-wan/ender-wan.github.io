@@ -7,9 +7,11 @@ sharing: true
 footer: true
 ---
 
-一个业余Common Lisp和专业C++程序员。
+I'm a Gopher
 
 
 **How to contact me?**
 
 wanjiadong at gmail dot com
+
+[Github](https://github.com/ender-wan)
