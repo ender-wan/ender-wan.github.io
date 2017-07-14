@@ -4,7 +4,7 @@
   <title><![CDATA[Ender's Blog]]></title>
   <link href="http://endwan.com/atom.xml" rel="self"/>
   <link href="http://endwan.com/"/>
-  <updated>2014-01-29T04:54:59+08:00</updated>
+  <updated>2017-07-15T01:36:22+08:00</updated>
   <id>http://endwan.com/</id>
   <author>
     <name><![CDATA[Ender Wan]]></name>
@@ -14,11 +14,42 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Kafka Configuration Memo]]></title>
+    <link href="http://endwan.com/blog/2017/07/15/kafka-configuration-memo/"/>
+    <updated>2017-07-15T00:31:44+08:00</updated>
+    <id>http://endwan.com/blog/2017/07/15/kafka-configuration-memo</id>
+    <content type="html"><![CDATA[<p>有时候还真是不能过度透支自己，最近重新找回了编程的乐趣, 想把丢了好久的blog捡起来, 不知道写些什么, 就从一些简单的memo开始写起吧。</p>
+
+<p>最近配置kafka遇到最困惑的问题就是关于两个listener, 不知道为什么导致客户端连接不上, 记录下.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># kafka真正监听的地址, 只这样配置的话本机连接是不会有问题的
+</span><span class='line'>listeners=PLAINTEXT://:9092
+</span><span class='line'>
+</span><span class='line'># 这个是设置在zookeeper里面让客户端真正连接的地址，如果像以下一样留空，或者沿用listeners的配置
+</span><span class='line'># 将会导致客户端访问hostname:9092，所以连接kafka出错
+</span><span class='line'>advertised.listeners=PLAINTEXT://:9092
+</span><span class='line'>
+</span><span class='line'># 将ip段配置成如下kafka机器的域名或者外网ip就可以正常访问了
+</span><span class='line'>advertised.listeners=PLAINTEXT://endwan.com:9092</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Work at Home This Week]]></title>
     <link href="http://endwan.com/blog/2013/12/21/work-at-home-this-week/"/>
     <updated>2013-12-21T18:02:00+08:00</updated>
     <id>http://endwan.com/blog/2013/12/21/work-at-home-this-week</id>
-    <content type="html"><![CDATA[<p>这个星期由于脚被烫伤不能走路，于是享受了一下向往已久的&#8221;work at home&#8221;待遇。我总结了一些优缺点如下：</p>
+    <content type="html"><![CDATA[<p>这个星期由于脚被烫伤不能走路，于是享受了一下向往已久的"work at home"待遇。我总结了一些优缺点如下：</p>
 
 <h3>优点</h3>
 
@@ -98,7 +129,7 @@
 <span class='line-number'>10</span>
 <span class='line-number'>11</span>
 <span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='cpp'><span class='line'><span class="kt">int</span> <span class="n">main</span><span class="p">()</span>
+</pre></td><td class='code'><pre><code class='cpp'><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="kt">int</span><span class="o">*</span> <span class="n">val</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">[</span><span class="mi">100</span><span class="p">];</span>
 </span><span class='line'>
@@ -160,7 +191,7 @@
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="k">if</span> <span class="o">[</span> -f ~/.bash_profile <span class="o">]</span>; <span class="k">then</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="k">if</span> <span class="o">[</span> -f ~/.bash_profile <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
 </span><span class='line'>. ~/.bash_profile
 </span><span class='line'><span class="k">fi</span>
 </span></code></pre></td></tr></table></div></figure>

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 指针 | Ender's Blog]]></title>
   <link href="http://endwan.com/blog/categories/zhi-zhen/atom.xml" rel="self"/>
   <link href="http://endwan.com/"/>
-  <updated>2014-01-29T04:54:59+08:00</updated>
+  <updated>2017-07-15T01:36:22+08:00</updated>
   <id>http://endwan.com/</id>
   <author>
     <name><![CDATA[Ender Wan]]></name>
@@ -20,47 +20,75 @@
     <id>http://endwan.com/blog/2013/10/31/c-plus-plus-arbitrarily-pointer-convert-to-an-object-pointer</id>
     <content type="html"><![CDATA[<p>最近碰到一个C++指针转换的问题，发现颇有意思，值得记录一下。
 有一个foo class如下。
-``` cpp
-class foo
-{
-public:</p>
-
-<pre><code>int get_foo(int val);
-
-int m_foo;
-</code></pre>
-
-<p>};</p>
-
-<p>int foo::get_foo(int val)
-{</p>
-
-<pre><code>int a = 345;
-int rc = val + a;
-cout &lt;&lt; rc &lt;&lt; endl;
-return rc;
-</code></pre>
-
-<p>}
-<code>
-测试如下
-</code> cpp
-int main()
-{</p>
-
-<pre><code>int* val = new int[100];
-
-foo* foo_ptr;
-foo_ptr = (foo*)val;
-foo_ptr-&gt;get_foo(100);
-foo_ptr-&gt;m_foo = 101;
-cout &lt;&lt; foo_ptr-&gt;m_foo &lt;&lt; endl;
-
-return 0;
-</code></pre>
-
-<p>}
-```
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+</pre></td><td class='code'><pre><code class='cpp'><span class='line'><span class="k">class</span> <span class="nc">foo</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'><span class="k">public</span><span class="o">:</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">get_foo</span><span class="p">(</span><span class="kt">int</span> <span class="n">val</span><span class="p">);</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="kt">int</span> <span class="n">m_foo</span><span class="p">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">};</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="kt">int</span> <span class="n">foo</span><span class="o">::</span><span class="n">get_foo</span><span class="p">(</span><span class="kt">int</span> <span class="n">val</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">345</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">rc</span> <span class="o">=</span> <span class="n">val</span> <span class="o">+</span> <span class="n">a</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">cout</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="n">rc</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="n">endl</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">rc</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">code</span><span class="o">&gt;</span>
+</span><span class='line'><span class="err">测试如下</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;</span> <span class="n">cpp</span>
+</span><span class='line'><span class="kt">int</span> <span class="n">main</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">int</span><span class="o">*</span> <span class="n">val</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">[</span><span class="mi">100</span><span class="p">];</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">foo</span><span class="o">*</span> <span class="n">foo_ptr</span><span class="p">;</span>
+</span><span class='line'><span class="n">foo_ptr</span> <span class="o">=</span> <span class="p">(</span><span class="n">foo</span><span class="o">*</span><span class="p">)</span><span class="n">val</span><span class="p">;</span>
+</span><span class='line'><span class="n">foo_ptr</span><span class="o">-&amp;</span><span class="n">gt</span><span class="p">;</span><span class="n">get_foo</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
+</span><span class='line'><span class="n">foo_ptr</span><span class="o">-&amp;</span><span class="n">gt</span><span class="p">;</span><span class="n">m_foo</span> <span class="o">=</span> <span class="mi">101</span><span class="p">;</span>
+</span><span class='line'><span class="n">cout</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="n">foo_ptr</span><span class="o">-&amp;</span><span class="n">gt</span><span class="p">;</span><span class="n">m_foo</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="n">endl</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 以上代码编译后运行竟然完全正常，太奇怪了！强制将任意一个指针转换成对象指针，然后调用它的方法和成员变量竟然可以正常执行。为此我去<a href="http://stackoverflow.com/questions/19688638/convert-an-int-pointer-to-any-object-pointer-then-call-its-methods-it-works">stackoverflow</a>求助了一下，再经过和同事讨论，得出了如下结果：</p>
 
 <ul>

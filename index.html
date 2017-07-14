@@ -9,8 +9,16 @@
   <meta name="author" content="Ender Wan">
 
   
-  <meta name="description" content="这个星期由于脚被烫伤不能走路，于是享受了一下向往已久的&#8221;work at home&#8221;待遇。我总结了一些优缺点如下： 优点 由于不用去公司，每天上下班路程上耗费的一个半小时省出来可以做点其他事情。
-可以选择性的去干干家务什么的，工作生活两不误，还可以放松放松大脑， &hellip;">
+  <meta name="description" content="有时候还真是不能过度透支自己，最近重新找回了编程的乐趣, 想把丢了好久的blog捡起来, 不知道写些什么, 就从一些简单的memo开始写起吧。 最近配置kafka遇到最困惑的问题就是关于两个listener, 不知道为什么导致客户端连接不上, 记录下. 1
+2
+3
+4
+5
+6
+7
+8
+9
+# &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -22,10 +30,11 @@
   <link rel="canonical" href="http://endwan.com/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="/javascripts/ender.js"></script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <link href="/atom.xml" rel="alternate" title="Ender's Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
 <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
@@ -47,6 +56,12 @@
 </head>
 
 <body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Ender's Blog</a></h1>
+  
+</hgroup>
+
+</header>
   <nav role="navigation"><ul class="subscription" data-subscription="rss">
   <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
   
@@ -54,7 +69,7 @@
   
 <form action="http://google.com/search" method="get">
   <fieldset role="search">
-    <input type="hidden" name="q" value="site:endwan.com" />
+    <input type="hidden" name="sitesearch" value="endwan.com">
     <input class="search" type="text" name="q" results="0" placeholder="Search"/>
   </fieldset>
 </form>
@@ -82,6 +97,60 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2017/07/15/kafka-configuration-memo/">Kafka Configuration Memo</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2017-07-15T00:31:44+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2017</span></span> <span class='time'>12:31 am</span></time>
+        
+           | <a href="/blog/2017/07/15/kafka-configuration-memo/#disqus_thread"
+             data-disqus-identifier="http://endwan.com/blog/2017/07/15/kafka-configuration-memo/">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>有时候还真是不能过度透支自己，最近重新找回了编程的乐趣, 想把丢了好久的blog捡起来, 不知道写些什么, 就从一些简单的memo开始写起吧。</p>
+
+<p>最近配置kafka遇到最困惑的问题就是关于两个listener, 不知道为什么导致客户端连接不上, 记录下.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># kafka真正监听的地址, 只这样配置的话本机连接是不会有问题的
+</span><span class='line'>listeners=PLAINTEXT://:9092
+</span><span class='line'>
+</span><span class='line'># 这个是设置在zookeeper里面让客户端真正连接的地址，如果像以下一样留空，或者沿用listeners的配置
+</span><span class='line'># 将会导致客户端访问hostname:9092，所以连接kafka出错
+</span><span class='line'>advertised.listeners=PLAINTEXT://:9092
+</span><span class='line'>
+</span><span class='line'># 将ip段配置成如下kafka机器的域名或者外网ip就可以正常访问了
+</span><span class='line'>advertised.listeners=PLAINTEXT://endwan.com:9092</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2013/12/21/work-at-home-this-week/">Work at Home This Week</a></h1>
     
     
@@ -91,23 +160,17 @@
 
 
 
-
-
-
-
-  
-
-
-<time datetime="2013-12-21T18:02:00+08:00" pubdate data-updated="true">Dec 21<span>st</span>, 2013</time>
+<time class='entry-date' datetime='2013-12-21T18:02:00+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>21</span><span class='date-suffix'>st</span>, <span class='date-year'>2013</span></span> <span class='time'>6:02 pm</span></time>
         
-         | <a href="/blog/2013/12/21/work-at-home-this-week/#disqus_thread">Comments</a>
+           | <a href="/blog/2013/12/21/work-at-home-this-week/#disqus_thread"
+             data-disqus-identifier="http://endwan.com/blog/2013/12/21/work-at-home-this-week/">Comments</a>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>这个星期由于脚被烫伤不能走路，于是享受了一下向往已久的&#8221;work at home&#8221;待遇。我总结了一些优缺点如下：</p>
+  <div class="entry-content"><p>这个星期由于脚被烫伤不能走路，于是享受了一下向往已久的"work at home"待遇。我总结了一些优缺点如下：</p>
 
 <h3>优点</h3>
 
@@ -150,16 +213,10 @@
 
 
 
-
-
-
-
-  
-
-
-<time datetime="2013-10-31T22:13:00+08:00" pubdate data-updated="true">Oct 31<span>st</span>, 2013</time>
+<time class='entry-date' datetime='2013-10-31T22:13:00+08:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>31</span><span class='date-suffix'>st</span>, <span class='date-year'>2013</span></span> <span class='time'>10:13 pm</span></time>
         
-         | <a href="/blog/2013/10/31/c-plus-plus-arbitrarily-pointer-convert-to-an-object-pointer/#disqus_thread">Comments</a>
+           | <a href="/blog/2013/10/31/c-plus-plus-arbitrarily-pointer-convert-to-an-object-pointer/#disqus_thread"
+             data-disqus-identifier="http://endwan.com/blog/2013/10/31/c-plus-plus-arbitrarily-pointer-convert-to-an-object-pointer/">Comments</a>
         
       </p>
     
@@ -216,7 +273,7 @@
 <span class='line-number'>10</span>
 <span class='line-number'>11</span>
 <span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='cpp'><span class='line'><span class="kt">int</span> <span class="n">main</span><span class="p">()</span>
+</pre></td><td class='code'><pre><code class='cpp'><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="kt">int</span><span class="o">*</span> <span class="n">val</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="p">[</span><span class="mi">100</span><span class="p">];</span>
 </span><span class='line'>
@@ -272,16 +329,10 @@
 
 
 
-
-
-
-
-  
-
-
-<time datetime="2013-10-06T23:21:00+08:00" pubdate data-updated="true">Oct 6<span>th</span>, 2013</time>
+<time class='entry-date' datetime='2013-10-06T23:21:00+08:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>11:21 pm</span></time>
         
-         | <a href="/blog/2013/10/06/about-emacs-calling-shell-command/#disqus_thread">Comments</a>
+           | <a href="/blog/2013/10/06/about-emacs-calling-shell-command/#disqus_thread"
+             data-disqus-identifier="http://endwan.com/blog/2013/10/06/about-emacs-calling-shell-command/">Comments</a>
         
       </p>
     
@@ -307,7 +358,7 @@
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="k">if</span> <span class="o">[</span> -f ~/.bash_profile <span class="o">]</span>; <span class="k">then</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="k">if</span> <span class="o">[</span> -f ~/.bash_profile <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
 </span><span class='line'>. ~/.bash_profile
 </span><span class='line'><span class="k">fi</span>
 </span></code></pre></td></tr></table></div></figure>
@@ -340,11 +391,15 @@
   
     <section>
   <h1>Categories</h1>
-    <ul id="category-list"><li><a href='/blog/categories//c-plus-plus/'>C++ (1)</a></li><li><a href='/blog/categories//emacs/'>Emacs (1)</a></li><li><a href='/blog/categories//life/'>Life (1)</a></li><li><a href='/blog/categories//zhi-zhen/'>指针 (1)</a></li></ul>
+    <ul id="category-list"><li><a href='/blog/categories//c-plus-plus/'>c++ (1)</a></li><li><a href='/blog/categories//emacs/'>emacs (1)</a></li><li><a href='/blog/categories//life/'>life (1)</a></li><li><a href='/blog/categories//zhi-zhen/'>指针 (1)</a></li></ul>
 </section>
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2017/07/15/kafka-configuration-memo/">Kafka Configuration Memo</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/12/21/work-at-home-this-week/">Work at Home This Week</a>
@@ -371,7 +426,7 @@
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2014 - Ender Wan -
+  Copyright &copy; 2017 - Ender Wan -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
@@ -386,7 +441,7 @@
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
       (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     }());
 </script>
@@ -402,7 +457,7 @@
       var twitterWidgets = document.createElement('script');
       twitterWidgets.type = 'text/javascript';
       twitterWidgets.async = true;
-      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
       document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
     })();
   </script>
