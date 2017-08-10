@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Emacs执行shell命令的问题 - Ender's Blog</title>
+  <title>Golang实时接收通过exec启动程序的标准输出 - Ender's Blog</title>
   <meta name="author" content="Ender Wan">
 
   
-  <meta name="description" content="今天在配置emacs的markdown-mode时调用C-c C-c p(转换成html然后在浏览器里打开预览)一直提示/bin/bash: markdown: command not found，它需要一个shell命令能将markdown转换成html， &hellip;">
+  <meta name="description" content="最近在go里面用exec启动另外一个程序并获取它的stdout时出现了一个比较奇怪的问题。 stdpipe里的数据不是按行传过来，而是过了很久才会刷一大批数据出来，应该是其中存在某种缓冲机制。 跟踪了go标准库的代码没有发现会导致这种现象，查看了管道的缓冲机制好像也没问题， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://endwan.com/blog/2013/10/06/about-emacs-calling-shell-command/">
+  <link rel="canonical" href="http://endwan.com/blog/2017/08/11/golangshi-shi-jie-shou-tong-guo-execqi-dong-cheng-xu-de-biao-zhun-shu-chu/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Ender's Blog" type="application/atom+xml">
@@ -85,7 +85,7 @@
   
   <header>
     
-      <h1 class="entry-title">Emacs执行shell命令的问题</h1>
+      <h1 class="entry-title">Golang实时接收通过exec启动程序的标准输出</h1>
     
     
       <p class="meta">
@@ -94,7 +94,7 @@
 
 
 
-<time class='entry-date' datetime='2013-10-06T23:21:00+08:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>11:21 pm</span></time>
+<time class='entry-date' datetime='2017-08-11T01:57:30+08:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2017</span></span> <span class='time'>1:57 am</span></time>
         
            | <a href="#disqus_thread"
              data-disqus-identifier="http://endwan.com">Comments</a>
@@ -104,41 +104,53 @@
   </header>
 
 
-<div class="entry-content"><p>今天在配置emacs的<a href="http://jblevins.org/projects/markdown-mode/">markdown-mode</a>时调用<code>C-c C-c p</code>(转换成html然后在浏览器里打开预览)一直提示<strong>/bin/bash: markdown: command not found</strong>，它需要一个shell命令能将markdown转换成html，这里我用到了一个python的<a href="https://pypi.python.org/pypi/Markdown">markdown</a>库。</p>
+<div class="entry-content"><p>最近在go里面用exec启动另外一个程序并获取它的stdout时出现了一个比较奇怪的问题。</p>
 
-<p>安装完在我的机器上是这个路径：
-<code>/Library/Frameworks/Python.framework/Versions/Current/bin/markdown_py</code></p>
+<p>stdpipe里的数据不是按行传过来，而是过了很久才会刷一大批数据出来，应该是其中存在某种缓冲机制。</p>
 
-<p>接下来在/usr/bin创建一个markdown的软链接到markdown_py</p>
+<p>跟踪了go标准库的代码没有发现会导致这种现象，查看了管道的缓冲机制好像也没问题，最后查到应该是跟该程序的缓冲io相关.</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo ln -s /Library/Frameworks/Python.framework/Versions/Current/bin/markdown_py /usr/bin/markdown
-</span></code></pre></td></tr></table></div></figure>
+<p>附上代码, 例子里运行的ping不会出现上面提到的问题</p>
 
-
-<p>做完上面这些后在emacs里调用<code>C-c C-c p</code>还是提示同样的错误，但是markdown在我的本地终端可以执行。Google了下之后发现这可能是由于emacs在启动一个shell的时候不会去读取.bash_profile，这个文件只是在登陆的时候被读取一次。而我在.bashrc里没有做任何关于环境变量的设置，所以/usr/bin没有被加到PATH里去，导致bash找不到markdown这条命令。</p>
-
-<p>等我把下面这句加到.bashrc</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="k">if</span> <span class="o">[</span> -f ~/.bash_profile <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
-</span><span class='line'>. ~/.bash_profile
-</span><span class='line'><span class="k">fi</span>
-</span></code></pre></td></tr></table></div></figure>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cmd := exec.Command("ping")
+</span><span class='line'>out, err := cmd.StdoutPipe()
+</span><span class='line'>if err != nil {
+</span><span class='line'>    ewlog.Error(err)
+</span><span class='line'>    return err
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>err = cmd.Start()
+</span><span class='line'>if err != nil {
+</span><span class='line'>    ewlog.Error(err)
+</span><span class='line'>    return err
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>scanner := bufio.NewScanner(out)
+</span><span class='line'>
+</span><span class='line'>for scanner.Scan() {
+</span><span class='line'>    line := scanner.Text()
+</span><span class='line'>    ewlog.Debug(line)
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
-
-<p>问题还是没有解决，提示同样的错误。继续Google, 最后终于在<a href="http://stackoverflow.com/questions/4393628/emacs-shell-command-not-found">这里</a>找到答案。emacs直接执行shell命令默认是非交互式的，所以不会去读取.bashrc文件的。解决的办法就是在.emacs初始化文件里加上这句。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='cl'><span class='line'><span class="p">(</span><span class="k">setq</span> <span class="nv">shell-command-switch</span> <span class="s">&quot;-ic&quot;</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>-i</code>指定bash启动是交互式的, 然后才会去读取.bashrc。或者你也可以配置<strong>BASH_ENV</strong>, 单独为非交互式的shell指定启动脚本。<code>-c</code>表示命令读取来自字符串。</p>
-
-<p>以上统统搞定终于写出了我的第一篇博客！哈哈</p>
 </div>
 
 
@@ -154,12 +166,12 @@
 
 
 
-<time class='entry-date' datetime='2013-10-06T23:21:00+08:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2013</span></span> <span class='time'>11:21 pm</span></time>
+<time class='entry-date' datetime='2017-08-11T01:57:30+08:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2017</span></span> <span class='time'>1:57 am</span></time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/emacs/'>emacs</a>
+    <a class='category' href='/blog/categories/golang/'>golang</a>
   
 </span>
 
@@ -168,7 +180,7 @@
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://endwan.com/blog/2013/10/06/about-emacs-calling-shell-command/" data-via="" data-counturl="http://endwan.com/blog/2013/10/06/about-emacs-calling-shell-command/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://endwan.com/blog/2017/08/11/golangshi-shi-jie-shou-tong-guo-execqi-dong-cheng-xu-de-biao-zhun-shu-chu/" data-via="" data-counturl="http://endwan.com/blog/2017/08/11/golangshi-shi-jie-shou-tong-guo-execqi-dong-cheng-xu-de-biao-zhun-shu-chu/" >Tweet</a>
   
   
   
@@ -177,8 +189,10 @@
     
     <p class="meta">
       
+        <a class="basic-alignment left" href="/blog/2017/07/15/kafka-configuration-memo/" title="Previous Post: kafka configuration memo">&laquo; kafka configuration memo</a>
       
-        <a class="basic-alignment right" href="/blog/2013/10/31/c-plus-plus-arbitrarily-pointer-convert-to-an-object-pointer/" title="Next Post: C++任意指针转换为object指针">C++任意指针转换为object指针 &raquo;</a>
+      
+        <a class="basic-alignment right" href="/blog/2017/08/11/li-yong-endlessshi-xian-http-serverzi-geng-xin/" title="Next Post: 利用endless实现http server自更新">利用endless实现http server自更新 &raquo;</a>
       
     </p>
   </footer>
@@ -248,8 +262,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://endwan.com/blog/2013/10/06/about-emacs-calling-shell-command/';
-        var disqus_url = 'http://endwan.com/blog/2013/10/06/about-emacs-calling-shell-command/';
+        var disqus_identifier = 'http://endwan.com/blog/2017/08/11/golangshi-shi-jie-shou-tong-guo-execqi-dong-cheng-xu-de-biao-zhun-shu-chu/';
+        var disqus_url = 'http://endwan.com/blog/2017/08/11/golangshi-shi-jie-shou-tong-guo-execqi-dong-cheng-xu-de-biao-zhun-shu-chu/';
         var disqus_script = 'embed.js';
       
     (function () {
