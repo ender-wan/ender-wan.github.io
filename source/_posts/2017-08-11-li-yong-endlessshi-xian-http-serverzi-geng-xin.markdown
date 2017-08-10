@@ -1,9 +1,9 @@
 ---
 layout: post
-title: "using endless to update golang web service itself"
-date: 2017-08-11 01:29:44 +0800
+title: "利用endless实现http server自更新"
+date: 2017-08-11 01:58:50 +0800
 comments: true
-categories:
+categories: golang endless http
 ---
 
 [Endless](https://github.com/fvbock/endless)可以为go http server提供不停机重启的能力，很容易集成到自己的web service里面，只需要用它提供的ListenAndServe就好了。

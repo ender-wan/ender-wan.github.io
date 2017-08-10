@@ -1,9 +1,9 @@
 ---
 layout: post
-title: "receive real time stdout from exec in golang"
-date: 2017-08-11 00:55:44 +0800
+title: "golang实时接收通过exec启动程序的标准输出"
+date: 2017-08-11 01:57:30 +0800
 comments: true
-categories:
+categories: golang
 ---
 
 最近在go里面用exec启动另外一个程序并获取它的stdout时出现了一个比较奇怪的问题。
