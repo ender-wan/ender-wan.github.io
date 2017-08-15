@@ -1,0 +1,58 @@
+---
+layout: post
+title: "使用link连接docker容器"
+date: 2017-08-15 10:04:09 +0800
+comments: true
+categories:
+---
+
+首先我们启动一个elasticsearch container命名为elas。
+```
+docker run -d --name elas -v "$PWD/data":/usr/share/elasticsearch/data localhost:5000/docker.io/elasticsearch
+```
+
+接下来我们需要启动一个kibana container自动连接到elas, 使用link参数可以很容易将elas的网络参数传递到kibana container
+```
+docker run --name kibana --link elas:elasticsearch -p 5601:5601 -d localhost:5000/docker.io/kibana
+```
+
+link参数在启动kibana container时做了两件事:
+
+* 在kibana的/etc/hosts加入一条dns记录，将container name、另外一个别名和elas的container id指向elas的ip。
+
+```
+172.17.0.3	elasticsearch 6604804b8e3d elas
+```
+
+* 在kibana里设置一系列elas相关的环境变量
+
+```
+# 进入kibana shell
+docker exec -i -t kibana /bin/bash
+/# set
+```
+
+```
+ELASTICSEARCH_ENV_CA_CERTIFICATES_JAVA_VERSION=20170531+nmu1
+ELASTICSEARCH_ENV_ELASTICSEARCH_DEB_VERSION=5.5.1
+ELASTICSEARCH_ENV_ELASTICSEARCH_VERSION=5.5.1
+ELASTICSEARCH_ENV_GOSU_VERSION=1.10
+ELASTICSEARCH_ENV_JAVA_DEBIAN_VERSION=8u141-b15-1~deb9u1
+ELASTICSEARCH_ENV_JAVA_HOME=/docker-java-home/jre
+ELASTICSEARCH_ENV_JAVA_VERSION=8u141
+ELASTICSEARCH_ENV_LANG=C.UTF-8
+ELASTICSEARCH_NAME=/kibana/elasticsearch
+ELASTICSEARCH_PORT=tcp://172.17.0.3:9200
+ELASTICSEARCH_PORT_9200_TCP=tcp://172.17.0.3:9200
+ELASTICSEARCH_PORT_9200_TCP_ADDR=172.17.0.3
+ELASTICSEARCH_PORT_9200_TCP_PORT=9200
+ELASTICSEARCH_PORT_9200_TCP_PROTO=tcp
+ELASTICSEARCH_PORT_9300_TCP=tcp://172.17.0.3:9300
+ELASTICSEARCH_PORT_9300_TCP_ADDR=172.17.0.3
+ELASTICSEARCH_PORT_9300_TCP_PORT=9300
+ELASTICSEARCH_PORT_9300_TCP_PROTO=tcp
+```
+
+在kibana container里面用到如上dns记录或者环境变量，就可以在容器启动时自动连接elasticsearch. 
+
+将这个用法扩展开来可以很方便连接不同容器内的服务。
