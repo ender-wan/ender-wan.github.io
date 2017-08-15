@@ -5,12 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Work at Home This Week - Ender's Blog</title>
+  <title>使用link连接docker容器 - Ender's Blog</title>
   <meta name="author" content="Ender Wan">
 
   
-  <meta name="description" content="这个星期由于脚被烫伤不能走路，于是享受了一下向往已久的"work at home"待遇。我总结了一些优缺点如下： 优点 由于不用去公司，每天上下班路程上耗费的一个半小时省出来可以做点其他事情。
-可以选择性的去干干家务什么的，工作生活两不误，还可以放松放松大脑，一天下来不会觉得那么累。:) &hellip;">
+  <meta name="description" content="首先我们启动一个elasticsearch container命名为elas。 1
+docker run -d --name elas -v "$PWD/data":/usr/share/elasticsearch/data localhost:5000/docker.io/ &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://endwan.com/blog/2013/12/21/work-at-home-this-week/">
+  <link rel="canonical" href="http://endwan.com/blog/2017/08/15/shi-yong-linklian-jie-dockerrong-qi/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Ender's Blog" type="application/atom+xml">
@@ -86,7 +86,7 @@
   
   <header>
     
-      <h1 class="entry-title">Work at Home This Week</h1>
+      <h1 class="entry-title">使用link连接docker容器</h1>
     
     
       <p class="meta">
@@ -95,7 +95,7 @@
 
 
 
-<time class='entry-date' datetime='2013-12-21T18:02:00+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>21</span><span class='date-suffix'>st</span>, <span class='date-year'>2013</span></span> <span class='time'>6:02 pm</span></time>
+<time class='entry-date' datetime='2017-08-15T10:04:09+08:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2017</span></span> <span class='time'>10:04 am</span></time>
         
            | <a href="#disqus_thread"
              data-disqus-identifier="http://endwan.com">Comments</a>
@@ -105,28 +105,85 @@
   </header>
 
 
-<div class="entry-content"><p>这个星期由于脚被烫伤不能走路，于是享受了一下向往已久的"work at home"待遇。我总结了一些优缺点如下：</p>
+<div class="entry-content"><p>首先我们启动一个elasticsearch container命名为elas。</p>
 
-<h3>优点</h3>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>docker run -d --name elas -v "$PWD/data":/usr/share/elasticsearch/data localhost:5000/docker.io/elasticsearch</span></code></pre></td></tr></table></div></figure>
+
+
+<p>接下来我们需要启动一个kibana container自动连接到elas, 使用link参数可以很容易将elas的网络参数传递到kibana container</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>docker run --name kibana --link elas:elasticsearch -p 5601:5601 -d localhost:5000/docker.io/kibana</span></code></pre></td></tr></table></div></figure>
+
+
+<p>link参数在启动kibana container时做了两件事:</p>
 
 <ul>
-<li>由于不用去公司，每天上下班路程上耗费的一个半小时省出来可以做点其他事情。</li>
-<li>可以选择性的去干干家务什么的，工作生活两不误，还可以放松放松大脑，一天下来不会觉得那么累。:)</li>
-<li>可以大声放音乐不用戴耳机，不过这个还真不适合我，有音乐在我永远进入不了那种Zen的状态。</li>
+<li>在kibana的/etc/hosts加入一条dns记录，将container name、另外一个别名和elas的container id指向elas的ip。</li>
 </ul>
 
 
-<h3>缺点</h3>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>172.17.0.3   elasticsearch 6604804b8e3d elas</span></code></pre></td></tr></table></div></figure>
+
 
 <ul>
-<li>咖啡！最先怀念的就是那台咖啡机啦，没有咖啡总觉得少了点什么，咖啡才是第一生产力啊！</li>
-<li>最大的问题是沟通，稍微复杂点的问题用文字沟通效率非常低，所以有时候还得靠电话。</li>
-<li>分心的事情比较多，整个人比较放松，不适合做目的性不太明确的工作。但是适应一两天后这个情况有所改善。</li>
-<li>由于工作基本上还是得用公司电脑，远程连接毕竟没有直接操作来得顺畅，所以效率上会低一些。</li>
+<li>在kibana里设置一系列elas相关的环境变量</li>
 </ul>
 
 
-<p>总的来说我还是比较喜欢公司的气氛，一个人在家真是闷得慌，偶尔这样一下调剂生活倒是不错。当然这个只是针对我而言，也有人更喜欢在家的那种感觉。我觉得在家工作比较适合那种一个人项目，比如我自己随便玩玩的那些东西，真正的团队合作还是得在一起，要不沟通的成本会大大超出在家工作的那些好处。</p>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># 进入kibana shell
+</span><span class='line'>docker exec -i -t kibana /bin/bash
+</span><span class='line'>/# set</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ELASTICSEARCH_ENV_CA_CERTIFICATES_JAVA_VERSION=20170531+nmu1
+</span><span class='line'>ELASTICSEARCH_ENV_ELASTICSEARCH_DEB_VERSION=5.5.1
+</span><span class='line'>ELASTICSEARCH_ENV_ELASTICSEARCH_VERSION=5.5.1
+</span><span class='line'>ELASTICSEARCH_ENV_GOSU_VERSION=1.10
+</span><span class='line'>ELASTICSEARCH_ENV_JAVA_DEBIAN_VERSION=8u141-b15-1~deb9u1
+</span><span class='line'>ELASTICSEARCH_ENV_JAVA_HOME=/docker-java-home/jre
+</span><span class='line'>ELASTICSEARCH_ENV_JAVA_VERSION=8u141
+</span><span class='line'>ELASTICSEARCH_ENV_LANG=C.UTF-8
+</span><span class='line'>ELASTICSEARCH_NAME=/kibana/elasticsearch
+</span><span class='line'>ELASTICSEARCH_PORT=tcp://172.17.0.3:9200
+</span><span class='line'>ELASTICSEARCH_PORT_9200_TCP=tcp://172.17.0.3:9200
+</span><span class='line'>ELASTICSEARCH_PORT_9200_TCP_ADDR=172.17.0.3
+</span><span class='line'>ELASTICSEARCH_PORT_9200_TCP_PORT=9200
+</span><span class='line'>ELASTICSEARCH_PORT_9200_TCP_PROTO=tcp
+</span><span class='line'>ELASTICSEARCH_PORT_9300_TCP=tcp://172.17.0.3:9300
+</span><span class='line'>ELASTICSEARCH_PORT_9300_TCP_ADDR=172.17.0.3
+</span><span class='line'>ELASTICSEARCH_PORT_9300_TCP_PORT=9300
+</span><span class='line'>ELASTICSEARCH_PORT_9300_TCP_PROTO=tcp</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在kibana container里面用到如上dns记录或者环境变量，就可以在容器启动时自动连接elasticsearch.</p>
+
+<p>将这个用法扩展开来可以很方便连接不同容器内的服务。</p>
 </div>
 
 
@@ -142,21 +199,15 @@
 
 
 
-<time class='entry-date' datetime='2013-12-21T18:02:00+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>21</span><span class='date-suffix'>st</span>, <span class='date-year'>2013</span></span> <span class='time'>6:02 pm</span></time>
+<time class='entry-date' datetime='2017-08-15T10:04:09+08:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2017</span></span> <span class='time'>10:04 am</span></time>
       
-
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/life/'>life</a>
-  
-</span>
 
 
     </p>
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://endwan.com/blog/2013/12/21/work-at-home-this-week/" data-via="" data-counturl="http://endwan.com/blog/2013/12/21/work-at-home-this-week/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://endwan.com/blog/2017/08/15/shi-yong-linklian-jie-dockerrong-qi/" data-via="" data-counturl="http://endwan.com/blog/2017/08/15/shi-yong-linklian-jie-dockerrong-qi/" >Tweet</a>
   
   
   
@@ -165,10 +216,8 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2013/10/31/c-plus-plus-arbitrarily-pointer-convert-to-an-object-pointer/" title="Previous Post: C++任意指针转换为object指针">&laquo; C++任意指针转换为object指针</a>
+        <a class="basic-alignment left" href="/blog/2017/08/11/li-yong-endlessshi-xian-http-serverzi-geng-xin/" title="Previous Post: 利用endless实现http server自更新">&laquo; 利用endless实现http server自更新</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2017/07/15/kafka-configuration-memo/" title="Next Post: kafka configuration memo">kafka configuration memo &raquo;</a>
       
     </p>
   </footer>
@@ -238,8 +287,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://endwan.com/blog/2013/12/21/work-at-home-this-week/';
-        var disqus_url = 'http://endwan.com/blog/2013/12/21/work-at-home-this-week/';
+        var disqus_identifier = 'http://endwan.com/blog/2017/08/15/shi-yong-linklian-jie-dockerrong-qi/';
+        var disqus_url = 'http://endwan.com/blog/2017/08/15/shi-yong-linklian-jie-dockerrong-qi/';
         var disqus_script = 'embed.js';
       
     (function () {
