@@ -3,7 +3,7 @@ layout: post
 title: "使用link连接docker容器"
 date: 2017-08-15 10:04:09 +0800
 comments: true
-categories:
+categories: docker
 ---
 
 首先我们启动一个elasticsearch container命名为elas。
@@ -53,6 +53,6 @@ ELASTICSEARCH_PORT_9300_TCP_PORT=9300
 ELASTICSEARCH_PORT_9300_TCP_PROTO=tcp
 ```
 
-在kibana container里面用到如上dns记录或者环境变量，就可以在容器启动时自动连接elasticsearch. 
+在kibana container里面用到如上dns记录或者环境变量，就可以在容器启动时自动连接elasticsearch.
 
 将这个用法扩展开来可以很方便连接不同容器内的服务。
