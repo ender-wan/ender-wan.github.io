@@ -5,12 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>利用endless实现http Server自更新 - Ender's Blog</title>
+  <title>Category: Docker - Ender's Blog</title>
   <meta name="author" content="Ender Wan">
 
   
-  <meta name="description" content="Endless可以为go http server提供不停机重启的能力，很容易集成到自己的web service里面，只需要用它提供的ListenAndServe就好了。 1
-err := endless.ListenAndServe("localhost:4242", handler) &hellip;">
+  <meta name="description" content="Category: docker">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +18,7 @@ err := endless.ListenAndServe("localhost:4242", handler) &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://endwan.com/blog/2017/08/11/li-yong-endlessshi-xian-http-serverzi-geng-xin/">
+  <link rel="canonical" href="http://endwan.com/blog/categories/docker/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Ender's Blog" type="application/atom+xml">
@@ -82,92 +81,36 @@ err := endless.ListenAndServe("localhost:4242", handler) &hellip;">
   <div id="main">
     <div id="content">
       <div>
-<article class="hentry" role="article">
+<article role="article">
   
   <header>
-    
-      <h1 class="entry-title">利用endless实现http Server自更新</h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2017-08-11T01:58:50+08:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2017</span></span> <span class='time'>1:58 am</span></time>
-        
-           | <a href="#disqus_thread"
-             data-disqus-identifier="http://endwan.com">Comments</a>
-        
-      </p>
+    <h1 class="entry-title">Category: Docker</h1>
     
   </header>
-
-
-<div class="entry-content"><p><a href="https://github.com/fvbock/endless">Endless</a>可以为go http server提供不停机重启的能力，很容易集成到自己的web service里面，只需要用它提供的ListenAndServe就好了。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>err := endless.ListenAndServe("localhost:4242", handler)</span></code></pre></td></tr></table></div></figure>
-
-
-<p>不停机重启的原理大概是通过接收SIGHUP信号，用exec再启动一个自己并将fd传过去，继续监听然后accept连接。父进程不再接收新的连接，等到处理完所有旧的连接或者设置一段时间超时之后自己终止。</p>
-
-<p>利用endless的特性我们就可以设计出一个自更新的解决方案，无论是通过定时还是提供一个api去触发更新操作。一旦触发更新，就去配置服务器上查询是否有比自身更新的版本，有的话就先将自身备份，然后下载最新版本替换掉自身，最后自己给自己发送SIGHUP信号实现自更新。</p>
-
-<p>当然这其中还会涉及一些其他细节需要处理，比如数据库结构、配置有变化等。</p>
-</div>
-
-
-  <footer>
-    <p class="meta">
-      
   
-
-<span class="byline author vcard">Posted by <span class="fn">Ender Wan</span></span>
-
-      
+  <div id="blog-archives" class="category">
 
 
 
-
-<time class='entry-date' datetime='2017-08-11T01:58:50+08:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2017</span></span> <span class='time'>1:58 am</span></time>
-      
-
-<span class="categories">
   
-    <a class='category' href='/blog/categories/endless/'>endless</a>, <a class='category' href='/blog/categories/golang/'>golang</a>, <a class='category' href='/blog/categories/http/'>http</a>
+  <h2>2017</h2>
+
+<article>
   
-</span>
+<h1><a href="/blog/2017/08/15/shi-yong-linklian-jie-dockerrong-qi/">使用link连接docker容器</a></h1>
+<time datetime="2017-08-15T10:04:09+08:00" pubdate><span class='month'>Aug</span> <span class='day'>15</span> <span class='year'>2017</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/docker/'>docker</a></span>
+</footer>
 
 
-    </p>
-    
-      <div class="sharing">
-  
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://endwan.com/blog/2017/08/11/li-yong-endlessshi-xian-http-serverzi-geng-xin/" data-via="" data-counturl="http://endwan.com/blog/2017/08/11/li-yong-endlessshi-xian-http-serverzi-geng-xin/" >Tweet</a>
-  
-  
-  
-</div>
-
-    
-    <p class="meta">
-      
-        <a class="basic-alignment left" href="/blog/2017/08/11/golangshi-shi-jie-shou-tong-guo-execqi-dong-cheng-xu-de-biao-zhun-shu-chu/" title="Previous Post: golang实时接收通过exec启动程序的标准输出">&laquo; golang实时接收通过exec启动程序的标准输出</a>
-      
-      
-        <a class="basic-alignment right" href="/blog/2017/08/15/shi-yong-linklian-jie-dockerrong-qi/" title="Next Post: 使用link连接docker容器">使用link连接docker容器 &raquo;</a>
-      
-    </p>
-  </footer>
 </article>
 
-  <section>
-    <h1>Comments</h1>
-    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
-  </section>
+
+  
+</article>
 
 </div>
 
@@ -226,10 +169,7 @@ err := endless.ListenAndServe("localhost:4242", handler) &hellip;">
       var disqus_shortname = 'endersblog';
       
         
-        // var disqus_developer = 1;
-        var disqus_identifier = 'http://endwan.com/blog/2017/08/11/li-yong-endlessshi-xian-http-serverzi-geng-xin/';
-        var disqus_url = 'http://endwan.com/blog/2017/08/11/li-yong-endlessshi-xian-http-serverzi-geng-xin/';
-        var disqus_script = 'embed.js';
+        var disqus_script = 'count.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

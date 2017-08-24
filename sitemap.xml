@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>http://endwan.com/blog/2017/08/22/fen-bu-shi-ji-suan-xiang-guan-li-lun/</loc>
+<lastmod>2017-08-22T20:21:00+08:00</lastmod>
+</url>
+<url>
 <loc>http://endwan.com/blog/2017/08/15/shi-yong-linklian-jie-dockerrong-qi/</loc>
 <lastmod>2017-08-15T10:04:09+08:00</lastmod>
 </url>
@@ -57,5 +61,17 @@
 </url>
 <url>
 <loc>http://endwan.com/blog/categories/http/</loc>
+</url>
+<url>
+<loc>http://endwan.com/blog/categories/docker/</loc>
+</url>
+<url>
+<loc>http://endwan.com/blog/categories/fen-bu-shi-ji-suan/</loc>
+</url>
+<url>
+<loc>http://endwan.com/blog/categories/raft/</loc>
+</url>
+<url>
+<loc>http://endwan.com/blog/categories/cap/</loc>
 </url>
 </urlset>
